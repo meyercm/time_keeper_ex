@@ -1,5 +1,6 @@
 defmodule PersistenceTest do
   use ExUnit.Case
+
   alias TimeKeeper.Persistence
 
   test "it generates the proper filename" do

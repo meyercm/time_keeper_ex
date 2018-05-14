@@ -1,13 +1,17 @@
 defmodule TimeKeeper.PositionProvider do
   import ShorterMaps
+  require Logger
 
   def get_position() do
     # System.cmd result looks like: {"x:720 y:439 screen:0 window:417\n", 0}
     {raw_string, 0} = System.cmd("xdotool", ["getmouselocation"])
-    parse_getloc(raw_string)
+    result = parse_getloc(raw_string)
+    Logger.debug("got mouse position at #{inspect result}")
+    result
   end
 
   def set_position(x, y) do
+    Logger.debug("setting mouse position to (#{x}, #{y})")
     System.cmd("xdotool", ["mousemove", "--sync", "#{x}", "#{y}"])
   end
 

@@ -1,5 +1,5 @@
 defmodule TimeKeeper.Persistence do
-
+  require Logger
   ######
   # API
   ######
@@ -10,7 +10,9 @@ defmodule TimeKeeper.Persistence do
     File.open(file, [:append], fn(f) ->
       case make_line(minute, value) do
         nil -> :noop
-        line -> IO.write(f, line)
+        line ->
+          Logger.debug("writing #{inspect line} to #{Path.basename(file)}")
+          IO.write(f, line)
       end
     end)
   end

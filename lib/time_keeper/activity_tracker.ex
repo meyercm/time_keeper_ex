@@ -1,6 +1,7 @@
 defmodule TimeKeeper.ActivityTracker do
   use GenServer
   import ShorterMaps
+  require Logger
   alias TimeKeeper.{MouseWatcher, Persistence}
 
   def start_link([]) do
@@ -22,7 +23,7 @@ defmodule TimeKeeper.ActivityTracker do
 
   def init([]) do
     Flub.sub(MouseWatcher)
-    {:ok, %State{}}
+    {:ok, %State{current_minute: get_current_minute()}}
   end
 
   def handle_info(%Flub.Message{channel: MouseWatcher, data: position}, ~M{current_minute} = state) do
@@ -30,6 +31,7 @@ defmodule TimeKeeper.ActivityTracker do
     state = case get_current_minute() do
       ^current_minute -> state
       new_minute ->
+        Logger.debug("new minute (#{inspect new_minute}) started")
         Persistence.write_minute(state.current_minute, state.distance)
         %{state|current_minute: new_minute, distance: 0}
     end
