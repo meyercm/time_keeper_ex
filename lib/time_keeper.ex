@@ -4,15 +4,11 @@ defmodule TimeKeeper do
   """
 
   @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> TimeKeeper.hello
-      :world
 
   """
-  def hello do
-    :world
+  def start do
+
+
   end
+
 end

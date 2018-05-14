@@ -8,8 +8,8 @@ defmodule TimeKeeper.Application do
   def start(_type, _args) do
     # List all child processes to be supervised
     children = [
-      # Starts a worker by calling: TimeKeeper.Worker.start_link(arg)
-      # {TimeKeeper.Worker, arg},
+      TimeKeeper.ActivityTracker,
+      TimeKeeper.MouseWatcher,
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

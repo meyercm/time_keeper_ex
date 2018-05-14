@@ -1,0 +1,8 @@
+%{
+  "ets_owner": {:hex, :ets_owner, "1.0.0", "f8408c609c29cb6925c2f71bac07f3e35352786b2c6824ad545f8133a4f3762d", [:mix], [], "hexpm"},
+  "ex2ms": {:hex, :ex2ms, "1.5.0", "19e27f9212be9a96093fed8cdfbef0a2b56c21237196d26760f11dfcfae58e97", [:mix], [], "hexpm"},
+  "flub": {:hex, :flub, "1.1.4", "5f5421b7ff02d2f5f1e4cd1334a0d63a88cf983b01bffedebff5d60ae085eb7b", [:mix], [{:ets_owner, "~> 1.0", [hex: :ets_owner, repo: "hexpm", optional: false]}, {:ex2ms, "~> 1.0", [hex: :ex2ms, repo: "hexpm", optional: false]}, {:gproc, "~> 0.5", [hex: :gproc, repo: "hexpm", optional: false]}, {:shorter_maps, "~> 2.1", [hex: :shorter_maps, repo: "hexpm", optional: false]}], "hexpm"},
+  "gproc": {:hex, :gproc, "0.6.1", "4579663e5677970758a05d8f65d13c3e9814ec707ad51d8dcef7294eda1a730c", [:rebar3], [], "hexpm"},
+  "mockery": {:hex, :mockery, "2.1.0", "75f2ae11f1f1ebd006d9e80fa4d2a181ed1bd45c7d48c4e501644c3f5c0012e5", [:mix], [], "hexpm"},
+  "shorter_maps": {:hex, :shorter_maps, "2.2.5", "77b2e3632a49c72ca8aea2a47687767b3ad2623b9ade529ffe31f41865a32886", [:mix], [], "hexpm"},
+}
