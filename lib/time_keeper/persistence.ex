@@ -14,18 +14,9 @@ defmodule TimeKeeper.Persistence do
     write(file, content)
   end
 
-
   def write_minute(minute, value) do
-    file = get_path(minute)
-    File.mkdir_p(Path.dirname(file))
-    File.open(file, [:append], fn(f) ->
-      case make_line(minute, value) do
-        nil -> :noop
-        line ->
-          Logger.debug("writing #{inspect line} to #{Path.basename(file)}")
-          IO.write(f, line)
-      end
-    end)
+    file = get_detail_path(minute)
+    write(file, format_line(minute, value))
   end
 
   #####################
@@ -46,24 +37,26 @@ defmodule TimeKeeper.Persistence do
     11 => "NOV",
     12 => "DEC",
   }
-  @root_path ".timekeeper"
 
   def write(file, content) do
+    File.mkdir_p(Path.dirname(file))
+    File.open(file, [:append], fn(f) ->
+      IO.write(f, content)
+    end)
   end
 
-  def format_line(minute, content) do
-  end
+  @root_path ".timekeeper"
 
   def get_changes_path({y, m, d, _hh, _mm}) do
     Path.join([System.user_home(), @root_path, "#{y}-#{pad(m)}", "#{y}-#{pad(m)}-#{d}.log"])
   end
-  def get_path({y, m, d, _hh, _mm}) do
-    Path.join([System.user_home(), @root_path, "#{y}-#{pad(m)}", "#{y}-#{pad(m)}-#{d}.log"])
+
+  def get_detail_path({y, m, d, _hh, _mm}) do
+    Path.join([System.user_home(), @root_path, "#{y}-#{pad(m)}", "#{y}-#{pad(m)}-#{d}.detail_log"])
   end
 
-  def make_line(_minute, 0), do: nil
-  def make_line({y, m, d, hh, mm}, value) do
-    "#{y}#{@months[m]}#{pad(d)} #{pad(hh)}:#{pad(mm)} #{value}\n"
+  def format_line({y, m, d, hh, mm}, content) do
+    "#{y}#{@months[m]}#{pad(d)} #{pad(hh)}:#{pad(mm)} #{content}\n"
   end
 
   def pad(val), do: String.pad_leading("#{val}", 2, "0")
