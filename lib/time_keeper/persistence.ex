@@ -3,6 +3,17 @@ defmodule TimeKeeper.Persistence do
   ######
   # API
   ######
+  def write_change(minute, :started) do
+    file = get_changes_path(minute)
+    content = format_line(minute, "Started moving")
+    write(file, content)
+  end
+  def write_change(minute, :stopped) do
+    file = get_changes_path(minute)
+    content = format_line(minute, "Stopped moving")
+    write(file, content)
+  end
+
 
   def write_minute(minute, value) do
     file = get_path(minute)
@@ -37,6 +48,15 @@ defmodule TimeKeeper.Persistence do
   }
   @root_path ".timekeeper"
 
+  def write(file, content) do
+  end
+
+  def format_line(minute, content) do
+  end
+
+  def get_changes_path({y, m, d, _hh, _mm}) do
+    Path.join([System.user_home(), @root_path, "#{y}-#{pad(m)}", "#{y}-#{pad(m)}-#{d}.log"])
+  end
   def get_path({y, m, d, _hh, _mm}) do
     Path.join([System.user_home(), @root_path, "#{y}-#{pad(m)}", "#{y}-#{pad(m)}-#{d}.log"])
   end
