@@ -13,7 +13,9 @@ defmodule PersistenceTest do
     assert(homedir <> "/.timekeeper/2018-05/2018-05-13.log" == Persistence.get_changes_path({2018, 05, 13, 7, 12}))
   end
 
-  test "format_line produces tiihe correct file input" do
+  test "format_line produces the correct file input" do
     assert ("2018MAY13 08:15 12\n" == Persistence.format_line({2018, 5, 13, 8, 15}, 12))
   end
+
+
 end

@@ -36,8 +36,8 @@ defmodule TimeKeeper.ActivityTracker do
         minute_active = state.distance > 0
         case {last_minute_active, minute_active} do
           {same, same} -> :noop
-          {false, true} -> Persistence.write_changes(state.current_minute, :started)
-          {true, false} -> Persistence.write_changes(state.current_minute, :stopped)
+          {false, true} -> Persistence.write_change(state.current_minute, :started)
+          {true, false} -> Persistence.write_change(state.current_minute, :stopped)
         end
         Persistence.write_minute(state.current_minute, state.distance)
 

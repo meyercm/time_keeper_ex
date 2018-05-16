@@ -1,5 +1,8 @@
 defmodule TimeKeeper.Persistence do
   require Logger
+
+  import TimeKeeper.Utils
+
   ######
   # API
   ######
@@ -59,5 +62,4 @@ defmodule TimeKeeper.Persistence do
     "#{y}#{@months[m]}#{pad(d)} #{pad(hh)}:#{pad(mm)} #{content}\n"
   end
 
-  def pad(val), do: String.pad_leading("#{val}", 2, "0")
 end
