@@ -2,6 +2,8 @@ defmodule TimeKeeper.Persistence do
   require Logger
 
   import TimeKeeper.Utils
+  import ShorterMaps
+  import PredicateSigil
 
   ######
   # API
@@ -20,6 +22,14 @@ defmodule TimeKeeper.Persistence do
   def write_minute(minute, value) do
     file = get_detail_path(minute)
     write(file, format_line(minute, value))
+  end
+
+  def read_file({y,m,d}) do
+    get_detail_path({y, m, d, 0, 0})
+    |> read_file()
+  end
+  def read_file(path) when is_binary(path) do
+    read_detail(path)
   end
 
   #####################
@@ -41,6 +51,8 @@ defmodule TimeKeeper.Persistence do
     12 => "DEC",
   }
 
+  @inv_months Map.new(@months, fn {k, v} -> {v, k} end)
+
   def write(file, content) do
     File.mkdir_p(Path.dirname(file))
     File.open(file, [:append], fn(f) ->
@@ -60,6 +72,34 @@ defmodule TimeKeeper.Persistence do
 
   def format_line({y, m, d, hh, mm}, content) do
     "#{y}#{@months[m]}#{pad(d)} #{pad(hh)}:#{pad(mm)} #{content}\n"
+  end
+
+  @re_mon Map.values(@months) |> Enum.join("|")
+  @re_parse_detail ~r/(?<y>\d{4})(?<mon>#{@re_mon})(?<d>\d{2}) (?<hh>\d{2}):(?<mm>\d{2}) (?<content>\d+)/
+  def parse_line(str) do
+    case Regex.named_captures(@re_parse_detail, str) do
+      nil -> nil
+      ~m{y, mon, d, hh, mm, content} -> {
+        {
+          y |> String.to_integer(),
+          @inv_months[mon],
+          d |> String.to_integer(),
+          hh |> String.to_integer(),
+          mm |> String.to_integer()},
+        content |> String.to_integer()
+      }
+    end
+  end
+
+  def read_detail(file) do
+    if File.exists?(file) do
+      File.read!(file)
+      |> String.split("\n")
+      |> Enum.map(&parse_line/1)
+      |> Enum.reject(~p(nil))
+    else
+      []
+    end
   end
 
 end

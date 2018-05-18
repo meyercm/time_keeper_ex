@@ -1,7 +1,9 @@
 defmodule TimeKeeper.Reports do
   import ShorterMaps
+  import PredicateSigil
 
   import TimeKeeper.Utils
+  alias TimeKeeper.Persistence
 
   defmodule Options do
     defstruct [
@@ -10,11 +12,35 @@ defmodule TimeKeeper.Reports do
     ]
   end
 
-  def format_data(data, ~M{%Options idle_gap_min, include_idle} = options \\ %Options{}) do
+  def print(date_query, options \\ %Options{}) do
+    build_reports(date_query, options)
+    |> Enum.join("\n")
+  end
+
+  def build_reports(item_or_items, options \\ %Options{})
+  def build_reports(list, options) when is_list(list) do
+    Enum.map(list, &(do_build_report(&1, options)))
+    |> Enum.join("\n\n")
+  end
+  def build_reports(item, options), do: build_reports([item], options)
+
+  def do_build_report(offset, options) when is_integer(offset) do
+    {d, _t} = :calendar.local_time()
+    (:calendar.date_to_gregorian_days(d) - offset)
+    |> :calendar.gregorian_days_to_date()
+    |> do_build_report(options)
+  end
+  def do_build_report({_y, _m, _d} = date, options) do
+    Persistence.read_file(date)
+    |> format_data(options)
+  end
+
+  def format_data(data, ~M{%Options idle_gap_min, include_idle} \\ %Options{}) do
     data
     |> Enum.sort
     |> break_at(idle_gap_min) # List of lists now
     |> Enum.map(&format_group/1)
+    |> Enum.reject(~p(nil))
     |> inject_idle(include_idle)
     |> Enum.map(&(&1.output))
     |> Enum.join("\n")
@@ -48,6 +74,7 @@ defmodule TimeKeeper.Reports do
   end
   def after_fun(item), do: {:cont, item, []}
 
+  def format_group([]), do: nil
   def format_group(list_of_times) do
     [first|_rest] = list_of_times
     [last|_rest] = Enum.reverse(list_of_times)

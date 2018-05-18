@@ -24,6 +24,8 @@ defmodule TimeKeeper.MixProject do
     [
       {:shorter_maps, "~> 2.2"},
       {:flub, "~> 1.1"},
+      {:predicate_sigil, "~> 0.1"},
+      {:pattern_tap, "~> 0.4"},
     ]
   end
 end
